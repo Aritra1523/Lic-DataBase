@@ -30,6 +30,7 @@ function FileUpload({ setFileId }) {
 
     } catch (err) {
       console.log(err);
+      alert(err.message);
       setStatus("Upload Failed ❌");
     }
 
