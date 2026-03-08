@@ -18,6 +18,7 @@ function Login() {
     } catch (error) {
       console.log(error);
       alert("Login Failed");
+      alert(err.message);
     }
   };
 
