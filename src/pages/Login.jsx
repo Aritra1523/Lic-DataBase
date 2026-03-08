@@ -17,8 +17,9 @@ function Login() {
       navigate("/dashboard");
     } catch (error) {
       console.log(error);
-      alert("Login Failed");
       alert(err.message);
+      alert("Login Failed");
+      
     }
   };
 
