@@ -45,7 +45,7 @@ function FileUpload({ setFileId }) {
 
       <input
         type="file"
-        accept=".pdf,image/*"
+       // accept=".pdf,image/*"
         onChange={(e) => setFile(e.target.files[0])}
       />
 
