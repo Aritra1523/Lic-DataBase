@@ -9,19 +9,29 @@ function Login() {
   const navigate = useNavigate();
 
   const login = async () => {
-    try {
-      // await account.deleteSessions();
-      await account.createEmailPasswordSession(email, password);
+  try {
 
+    // check existing session
+    const user = await account.get();
+
+    if (user) {
+      alert("Already logged in");
+      navigate("/dashboard");
+      return;
+    }
+
+  } catch {
+    // if no session exists, create one
+    try {
+      await account.createEmailPasswordSession(email, password);
       alert("Login Success");
       navigate("/dashboard");
     } catch (error) {
       console.log(error);
       alert(error.message);
-      alert("Login Failed");
-      
     }
-  };
+  }
+};
 
   return (
   <div className="login-container">
