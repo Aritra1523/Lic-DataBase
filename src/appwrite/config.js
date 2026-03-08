@@ -8,7 +8,7 @@ client
 
 export const databases = new Databases(client);
 export const storage = new Storage(client);
-export const account = new Account(client);   // ✅ ADD THIS
+export const account = new Account(client);  
 
 export const DATABASE_ID = import.meta.env.VITE_DATABASE_ID;
 export const COLLECTION_ID = import.meta.env.VITE_COLLECTION_ID;

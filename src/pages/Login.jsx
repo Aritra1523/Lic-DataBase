@@ -10,7 +10,7 @@ function Login() {
 
   const login = async () => {
     try {
-      await account.deleteSessions();
+      // await account.deleteSessions();
       await account.createEmailPasswordSession(email, password);
 
       alert("Login Success");
