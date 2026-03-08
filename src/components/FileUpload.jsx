@@ -31,7 +31,10 @@ function FileUpload({ setFileId }) {
     } catch (err) {
       console.log(err);
       alert(err.message);
+      alert(file)
+      alert(file.size)
       setStatus("Upload Failed ❌");
+
     }
 
   };
@@ -42,6 +45,7 @@ function FileUpload({ setFileId }) {
 
       <input
         type="file"
+        accept=".pdf,image/*"
         onChange={(e) => setFile(e.target.files[0])}
       />
 
