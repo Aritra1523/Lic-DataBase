@@ -31,8 +31,8 @@ function FileUpload({ setFileId }) {
     } catch (err) {
       console.log(err);
       alert(err.message);
-      alert(file)
-      alert(file.size)
+      // alert(file)
+      // alert(file.size)
       setStatus("Upload Failed ❌");
 
     }
