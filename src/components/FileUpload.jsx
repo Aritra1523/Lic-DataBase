@@ -4,12 +4,11 @@ import { ID } from "appwrite";
 
 function FileUpload({ setFileId }) {
 
-  const [file, setFile] = useState(null);
   const [status, setStatus] = useState("");
 
-  const upload = async () => {
+  const upload = async (selectedFile) => {
 
-    if (!file) {
+    if (!selectedFile) {
       setStatus("Please select a file first");
       return;
     }
@@ -21,7 +20,7 @@ function FileUpload({ setFileId }) {
       const res = await storage.createFile(
         BUCKET_ID,
         ID.unique(),
-        file
+        selectedFile
       );
 
       setFileId(res.$id);
@@ -29,10 +28,9 @@ function FileUpload({ setFileId }) {
       setStatus("Upload Successful ✅");
 
     } catch (err) {
+
       console.log(err);
       alert(err.message);
-      // alert(file)
-      // alert(file.size)
       setStatus("Upload Failed ❌");
 
     }
@@ -45,13 +43,9 @@ function FileUpload({ setFileId }) {
 
       <input
         type="file"
-       // accept=".pdf,image/*"
-        onChange={(e) => setFile(e.target.files[0])}
+        accept=".pdf,image/*"
+        onChange={(e) => upload(e.target.files[0])}
       />
-
-      <button onClick={upload}>
-        Upload Document
-      </button>
 
       <p>{status}</p>
 
