@@ -31,6 +31,7 @@ function FileUpload({ setFileId }) {
 
       console.log(err);
       alert(err.message);
+      alert(err)
       setStatus("Upload Failed ❌");
 
     }
