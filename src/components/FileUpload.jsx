@@ -98,8 +98,10 @@ function FileUpload({ setFileId }) {
       console.log(err);
       setStatus("Upload Failed ❌");
 alert("Upload error:", err);
+alert("Error response:", err.response);
+alert(err.message);
   setStatus(err.message);
-      alert(err.message);
+      
 
     }
 
