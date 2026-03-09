@@ -31,7 +31,7 @@
 
 //       console.log(err);
 //       alert(err.message);
-      
+
 //       setStatus("Upload Failed ❌");
 
 //     }
@@ -58,20 +58,14 @@
 
 // export default FileUpload;
 
-
-
-
-
 import { useState } from "react";
 import { storage, BUCKET_ID } from "../appwrite/config";
 import { ID } from "appwrite";
 
 function FileUpload({ setFileId }) {
-
   const [status, setStatus] = useState("");
 
   const upload = async (e) => {
-
     const selectedFile = e.target.files[0];
 
     if (!selectedFile) {
@@ -80,37 +74,29 @@ function FileUpload({ setFileId }) {
     }
 
     try {
-
       setStatus("Uploading...");
 
       const res = await storage.createFile(
         BUCKET_ID,
         ID.unique(),
-        selectedFile
+        selectedFile,
       );
 
       setFileId(res.$id);
 
       setStatus(`${selectedFile.name} uploaded successfully ✅`);
-
     } catch (err) {
-
       console.log(err);
       setStatus("Upload Failed ❌");
-alert("Upload error:", err);
-alert("Error response:", err.response);
-alert(err.message);
-  setStatus(err.message);
-      
-
+      alert("Upload error:", err);
+      alert("Error response:", err.response);
+      alert(err.message);
+      setStatus(err.response);
     }
-
   };
 
   return (
-
     <div>
-
       <input
         type="file"
         accept=".pdf,image/*"
@@ -119,11 +105,8 @@ alert(err.message);
       />
 
       <p>{status}</p>
-
     </div>
-
   );
-
 }
 
 export default FileUpload;
