@@ -29,9 +29,9 @@ function FileUpload({ setFileId }) {
     } catch (err) {
       console.log(err);
       setStatus("Upload Failed ❌");
-      alert("Upload error:", err);
-      alert("Error response:", err.response);
-      alert("Error  Msg",err.message);
+      alert( err);
+      alert(err.response);
+      alert(err.message);
       setStatus(err.response);
     }
   };
