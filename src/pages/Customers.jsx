@@ -109,7 +109,7 @@ const totalPremium = customers.reduce(
             <th className="p-4">Phone</th>
             <th className="p-4">Policy</th>
             <th className="p-4">Premium</th>
-            <th className="p-4">Due Date</th>
+            <th className="p-4">Enrollment Date</th>
             <th className="p-4">Aadhar</th>
             <th className="p-4">PAN</th>
             <th className="p-4">Photo</th>
@@ -137,7 +137,7 @@ const totalPremium = customers.reduce(
                 <td className="p-4 text-green-600 font-semibold">
                   ₹{c.premiumAmount}
                 </td>
-                <td className="p-4">{c.dueDate}</td>
+                <td className="p-4">{c.EnrollmentDate}</td>
 
                 <td className="p-4">
                   <a

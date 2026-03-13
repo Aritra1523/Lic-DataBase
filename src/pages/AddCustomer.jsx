@@ -8,7 +8,7 @@ function AddCustomer() {
   const [phone, setPhone] = useState("");
   const [policy, setPolicy] = useState("");
   const [premiumAmount, setPremiumAmount] = useState("");
-  const [dueDate, setDueDate] = useState("");
+  const [EnrollmentDate, setEnrollmentDate] = useState("");
   const [fileId, setFileId] = useState("");
   const [aadharFile, setAadharFile] = useState("");
   const [panFile, setPanFile] = useState("");
@@ -24,7 +24,7 @@ function AddCustomer() {
         policyNumber: policy,
         document: fileId,
         premiumAmount: premiumAmount,
-        dueDate: dueDate,
+        EnrollmentDate: EnrollmentDate,
         aadhar: aadharFile,
         pan: panFile,
         photo: photoFile,
@@ -33,6 +33,17 @@ function AddCustomer() {
       });
 
       alert("Customer Added");
+      setName("");
+    setPhone("");
+    setPolicy("");
+    setPremiumAmount("");
+    setEnrollmentDate("");
+    setAadharFile("");
+    setPanFile("");
+    setPhotoFile("");
+    setBankFile("");
+    setPolicyType("");
+    setFileId("");
     } catch (error) {
       console.log(error);
     }
@@ -101,7 +112,7 @@ function AddCustomer() {
             </label>
             <input
               type="date"
-              onChange={(e) => setDueDate(e.target.value)}
+              onChange={(e) => setEnrollmentDate(e.target.value)}
               className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-1 focus:ring-black-500 focus:outline-none"
             />
           </div>

@@ -1,62 +1,3 @@
-// import { useState } from "react";
-// import { storage, BUCKET_ID } from "../appwrite/config";
-// import { ID } from "appwrite";
-
-// function FileUpload({ setFileId }) {
-
-//   const [status, setStatus] = useState("");
-
-//   const upload = async (selectedFile) => {
-
-//     if (!selectedFile) {
-//       setStatus("Please select a file first");
-//       return;
-//     }
-
-//     try {
-
-//       setStatus("Uploading...");
-
-//       const res = await storage.createFile(
-//         BUCKET_ID,
-//         ID.unique(),
-//         selectedFile
-//       );
-
-//       setFileId(res.$id);
-
-//       setStatus("Upload Successful ✅");
-
-//     } catch (err) {
-
-//       console.log(err);
-//       alert(err.message);
-
-//       setStatus("Upload Failed ❌");
-
-//     }
-
-//   };
-
-//   return (
-
-//     <div>
-
-//       <input
-//         type="file"
-//         accept=".pdf,image/*"
-//         onChange={(e) => upload(e.target.files[0])}
-//       />
-
-//       <p>{status}</p>
-
-//     </div>
-
-//   );
-
-// }
-
-// export default FileUpload;
 
 import { useState } from "react";
 import { storage, BUCKET_ID } from "../appwrite/config";
@@ -90,7 +31,7 @@ function FileUpload({ setFileId }) {
       setStatus("Upload Failed ❌");
       alert("Upload error:", err);
       alert("Error response:", err.response);
-      alert(err.message);
+      alert("Error  Msg",err.message);
       setStatus(err.response);
     }
   };
@@ -99,7 +40,7 @@ function FileUpload({ setFileId }) {
     <div>
       <input
         type="file"
-        accept=".pdf,image/*"
+        accept=".jpg,.jpeg,.png,.pdf"
         capture="environment"
         onChange={upload}
       />
