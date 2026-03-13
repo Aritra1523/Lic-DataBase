@@ -107,8 +107,12 @@ const totalPremium = customers.reduce(
           <tr className="text-gray-600 text-sm">
             <th className="p-4">Name</th>
             <th className="p-4">Phone</th>
-            <th className="p-4">Policy</th>
-            <th className="p-4">Premium</th>
+            <th className="p-4">Date of Birth</th>
+            <th className="p-4">Father Name</th>
+            <th className="p-4">Mother Name</th>
+            <th className="p-4">Policy Number</th>
+            <th className="p-4">Policy Type</th>
+            <th className="p-4">Premium Amount</th>
             <th className="p-4">Enrollment Date</th>
             <th className="p-4">Aadhar</th>
             <th className="p-4">PAN</th>
@@ -127,18 +131,29 @@ const totalPremium = customers.reduce(
             const bankURL = storage.getFileView(BUCKET_ID, c.bankPassbook);
 
             return (
-              <tr
-                key={c.$id}
-                className="border-b hover:bg-gray-50 transition"
-              >
-                <td className="p-4 font-medium">{c.fullName}</td>
-                <td className="p-4">{c.phone}</td>
-                <td className="p-4">{c.policyNumber}</td>
-                <td className="p-4 text-green-600 font-semibold">
-                  ₹{c.premiumAmount}
-                </td>
-                <td className="p-4">{c.EnrollmentDate}</td>
+              <tr key={c.$id} className="border-b hover:bg-gray-50 transition">
 
+<td className="p-4 font-medium">{c.fullName}</td>
+
+<td className="p-4">{c.phone}</td>
+
+<td className="p-4">{c.DateOfBirth?.split("T")[0]}</td>
+
+<td className="p-4">{c.FatherName}</td>
+
+<td className="p-4">{c.MotherName}</td>
+
+<td className="p-4">{c.policyNumber}</td>
+
+<td className="p-4">{c.policyType}</td>
+
+<td className="p-4 text-green-600 font-semibold">
+₹{c.premiumAmount}
+</td>
+
+<td className="p-4">
+{c.EnrollmentDate?.split("T")[0]}
+</td>
                 <td className="p-4">
                   <a
                     href={aadharURL}

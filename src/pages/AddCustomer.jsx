@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useState } from "react";
 import { databases, DATABASE_ID, COLLECTION_ID } from "../appwrite/config";
 import { ID } from "appwrite";
 import FileUpload from "../components/FileUpload";
@@ -9,6 +9,9 @@ function AddCustomer() {
   const [policy, setPolicy] = useState("");
   const [premiumAmount, setPremiumAmount] = useState("");
   const [EnrollmentDate, setEnrollmentDate] = useState("");
+  const [dateOfBirth, setdateOfBirth] = useState("");
+  const [fatherName, setfatherName] = useState("");
+  const [motherName, setmotherName] = useState("");
   const [fileId, setFileId] = useState("");
   const [aadharFile, setAadharFile] = useState("");
   const [panFile, setPanFile] = useState("");
@@ -22,28 +25,32 @@ function AddCustomer() {
         fullName: name,
         phone: phone,
         policyNumber: policy,
-        document: fileId,
+        // document: fileId,
         premiumAmount: premiumAmount,
         EnrollmentDate: EnrollmentDate,
+        DateOfBirth: dateOfBirth,
+        FatherName: fatherName,
+        MotherName: motherName,
         aadhar: aadharFile,
         pan: panFile,
         photo: photoFile,
         bankPassbook: bankFile,
-        policyType:policyType
+        policyType: policyType,
       });
 
       alert("Customer Added");
       setName("");
-    setPhone("");
-    setPolicy("");
-    setPremiumAmount("");
-    setEnrollmentDate("");
-    setAadharFile("");
-    setPanFile("");
-    setPhotoFile("");
-    setBankFile("");
-    setPolicyType("");
-    setFileId("");
+      setPhone("");
+      setPolicy("");
+      setPremiumAmount("");
+      setEnrollmentDate("");
+      setfatherName(""), setmotherName("");
+      setAadharFile("");
+      setPanFile("");
+      setPhotoFile("");
+      setBankFile("");
+      setPolicyType("");
+      setFileId("");
     } catch (error) {
       console.log(error);
     }
@@ -69,7 +76,16 @@ function AddCustomer() {
               className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-1 focus:ring-black-500 focus:outline-none"
             />
           </div>
-
+          <div className="md:col-span-2">
+            <label className="text-lg font-semibold text-black-600">
+              Date of Birth
+            </label>
+            <input
+              type="date"
+              onChange={(e) => setdateOfBirth(e.target.value)}
+              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-1 focus:ring-black-500 focus:outline-none"
+            />
+          </div>
           <div>
             <label className="text-lg font-semibold text-black-600">
               Phone
@@ -125,6 +141,28 @@ function AddCustomer() {
               placeholder="Pllicy Type"
               onChange={(e) => setPolicyType(e.target.value)}
               className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-1 focus:ring-black-300 focus:outline-none"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="text-lg font-semibold text-black-600">
+              Father's Name
+            </label>
+            <input
+              type="text"
+              onChange={(e) => setfatherName(e.target.value)}
+              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-1 focus:ring-black-500 focus:outline-none"
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="text-lg font-semibold text-black-600">
+              Mother's Name
+            </label>
+            <input
+              type="text"
+              onChange={(e) => setmotherName(e.target.value)}
+              className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-1 focus:ring-black-500 focus:outline-none"
             />
           </div>
         </div>
