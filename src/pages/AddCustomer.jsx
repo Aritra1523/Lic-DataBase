@@ -18,7 +18,7 @@ function AddCustomer() {
   const [photoFile, setPhotoFile] = useState("");
   const [bankFile, setBankFile] = useState("");
   const [policyType, setPolicyType] = useState("");
-
+const [loading, setLoading] = useState(false);
   const addCustomer = async () => {
     try {
       await databases.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), {
@@ -38,22 +38,24 @@ function AddCustomer() {
         policyType: policyType,
       });
 
-      alert("Customer Added");
-      setName("");
-      setPhone("");
-      setPolicy("");
-      setPremiumAmount("");
-      setEnrollmentDate("");
-      setfatherName(""), setmotherName("");
-      setAadharFile("");
-      setPanFile("");
-      setPhotoFile("");
-      setBankFile("");
-      setPolicyType("");
-      setFileId("");
+      alert("Customer Added"),
+      setName(""),
+      setPhone(""),
+      setPolicy(""),
+      setPremiumAmount(""),
+      setEnrollmentDate(""),
+      setfatherName(""), setmotherName(""),
+      setAadharFile(""),
+      setPanFile(""),
+      setPhotoFile(""),
+      setBankFile(""),
+      setPolicyType(""),
+      setFileId("")
     } catch (error) {
       console.log(error);
-    }
+    }finally {
+    setLoading(false); 
+  }
   };
 
   return (
@@ -72,6 +74,7 @@ function AddCustomer() {
             <input
               type="text"
               placeholder="Enter customer name"
+              value={name}
               onChange={(e) => setName(e.target.value)}
               className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-1 focus:ring-black-500 focus:outline-none"
             />
@@ -82,6 +85,7 @@ function AddCustomer() {
             </label>
             <input
               type="date"
+              value={dateOfBirth}
               onChange={(e) => setdateOfBirth(e.target.value)}
               className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-1 focus:ring-black-500 focus:outline-none"
             />
@@ -93,6 +97,7 @@ function AddCustomer() {
             <input
               type="text"
               placeholder="Enter phone number"
+              value={phone}
               onChange={(e) => setPhone(e.target.value)}
               className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-1 focus:ring-black-500 focus:outline-none"
             />
@@ -105,6 +110,7 @@ function AddCustomer() {
             <input
               type="text"
               placeholder="Enter policy number"
+              value={policy}
               onChange={(e) => setPolicy(e.target.value)}
               className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-1 focus:ring-black-500 focus:outline-none"
             />
@@ -117,6 +123,7 @@ function AddCustomer() {
             <input
               type="number"
               placeholder="Premium amount"
+              value={premiumAmount}
               onChange={(e) => setPremiumAmount(e.target.value)}
               className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-1 focus:ring-black-300 focus:outline-none"
             />
@@ -128,6 +135,7 @@ function AddCustomer() {
             </label>
             <input
               type="date"
+              value={EnrollmentDate}
               onChange={(e) => setEnrollmentDate(e.target.value)}
               className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-1 focus:ring-black-500 focus:outline-none"
             />
@@ -139,6 +147,7 @@ function AddCustomer() {
             <input
               type="text"
               placeholder="Pllicy Type"
+              value={policyType}
               onChange={(e) => setPolicyType(e.target.value)}
               className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-1 focus:ring-black-300 focus:outline-none"
             />
@@ -150,6 +159,7 @@ function AddCustomer() {
             </label>
             <input
               type="text"
+              value={fatherName}
               onChange={(e) => setfatherName(e.target.value)}
               className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-1 focus:ring-black-500 focus:outline-none"
             />
@@ -161,6 +171,7 @@ function AddCustomer() {
             </label>
             <input
               type="text"
+              value={motherName}
               onChange={(e) => setmotherName(e.target.value)}
               className="mt-1 w-full px-4 py-2 border rounded-lg focus:ring-1 focus:ring-black-500 focus:outline-none"
             />
@@ -202,14 +213,22 @@ function AddCustomer() {
           </div>
         </div>
 
-        <div className="mt-10 flex justify-end">
+        {/* <div className="mt-10 flex justify-end">
           <button
             onClick={addCustomer}
             className="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition"
           >
-            Save Customer
+            Add Customer
           </button>
-        </div>
+        </div> */}
+        <button
+  onClick={addCustomer}
+  disabled={loading}
+  className={`px-8 py-3 rounded-lg font-semibold transition
+  ${loading ? "bg-gray-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700 text-white"}`}
+>
+  {loading ? "Adding..." : "Add Customer"}
+</button>
       </div>
     </div>
   );
