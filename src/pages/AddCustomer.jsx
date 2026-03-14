@@ -213,14 +213,7 @@ const [loading, setLoading] = useState(false);
           </div>
         </div>
 
-        {/* <div className="mt-10 flex justify-end">
-          <button
-            onClick={addCustomer}
-            className="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition"
-          >
-            Add Customer
-          </button>
-        </div> */}
+       
         <button
   onClick={addCustomer}
   disabled={loading}
