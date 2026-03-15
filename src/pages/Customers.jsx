@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "../App.css";
-
+import { ID } from "appwrite";
 import {
   databases,
   DATABASE_ID,
@@ -178,28 +178,100 @@ const getDueDates = (customer) => {
       [name]: value,
     });
   };
-  const updateCustomer = async () => {
-    try {
-      await databases.updateDocument(
-        DATABASE_ID,
-        COLLECTION_ID,
-        editCustomer.$id,
-        {
-          fullName: editData.fullName,
-          phone: editData.phone,
-          FatherName: editData.FatherName,
-          MotherName: editData.MotherName,
-          premiumAmount: editData.premiumAmount,
-          policyNumber: editData.policyNumber,
-        },
+ const updateCustomer = async () => {
+  try {
+
+    let aadharId = editCustomer.aadhar;
+    let panId = editCustomer.pan;
+    let photoId = editCustomer.photo;
+    let bankId = editCustomer.bankPassbook;
+
+    if (editData.newAadhar) {
+      const file = await storage.createFile(
+        BUCKET_ID,
+        ID.unique(),
+        editData.newAadhar
       );
 
-      setEditCustomer(null);
-      loadCustomers();
-    } catch (err) {
-      console.log(err);
+    if (editCustomer.aadhar) {
+  await storage.deleteFile(BUCKET_ID, editCustomer.aadhar);
+}
+
+      aadharId = file.$id;
     }
-  };
+
+    if (editData.newPan) {
+      const file = await storage.createFile(
+        BUCKET_ID,
+        ID.unique(),
+        editData.newPan
+      );
+
+      // await storage.deleteFile(BUCKET_ID, editCustomer.pan);
+
+        if (editCustomer.pan) {
+  await storage.deleteFile(BUCKET_ID, editCustomer.pan);
+}
+
+      panId = file.$id;
+    }
+
+    if (editData.newPhoto) {
+      const file = await storage.createFile(
+        BUCKET_ID,
+        ID.unique(),
+        editData.newPhoto
+      );
+
+      // await storage.deleteFile(BUCKET_ID, editCustomer.photo);
+        if (editCustomer.photo) {
+  await storage.deleteFile(BUCKET_ID, editCustomer.photo);
+}
+
+      photoId = file.$id;
+    }
+
+    if (editData.newBank) {
+      const file = await storage.createFile(
+        BUCKET_ID,
+        ID.unique(),
+        editData.newBank
+      );
+
+      // await storage.deleteFile(BUCKET_ID, editCustomer.bankPassbook);
+
+        if (editCustomer.bankId) {
+  await storage.deleteFile(BUCKET_ID, editCustomer.bankId);
+}
+      bankId = file.$id;
+    }
+
+    await databases.updateDocument(
+      DATABASE_ID,
+      COLLECTION_ID,
+      editCustomer.$id,
+      {
+        fullName: editData.fullName,
+        phone: editData.phone,
+        FatherName: editData.FatherName,
+        MotherName: editData.MotherName,
+        premiumAmount: editData.premiumAmount,
+        policyNumber: editData.policyNumber,
+
+        aadhar: aadharId,
+        pan: panId,
+        photo: photoId,
+        bankPassbook: bankId
+      }
+    );
+
+    setEditCustomer(null);
+    loadCustomers();
+
+  } catch (err) {
+    console.log(err);
+  }
+};
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
       <h2 className="text-3xl font-bold mb-6">Customers</h2>
@@ -355,14 +427,14 @@ const isDue = !lastPaid || lastPaid < lastDue;
                     >
                       WhatsApp
                     </button>
-                    <button
+                    {/* <button
   onClick={() => markPaid(c)}
   className={`text-white px-3 py-1 rounded-lg ${
     c.lastPaidDate ? "bg-orange-500 hover:bg-orange-600" : "bg-blue-500 hover:bg-blue-600"
   }`}
 >
   {c.lastPaidDate ? "Undo Paid" : "Paid"}
-</button>
+</button> */}
                     <button
                       onClick={() => startEdit(c)}
                       className="bg-yellow-500 text-white px-3 py-1 rounded-lg hover:bg-yellow-600"
@@ -419,6 +491,42 @@ const isDue = !lastPaid || lastPaid < lastDue;
                 className="border p-2 w-full mb-4"
                 placeholder="Premium Amount"
               />
+
+              <p className="text-sm mt-2">Replace Aadhar</p>
+<input
+  type="file"
+  onChange={(e) =>
+    setEditData({ ...editData, newAadhar: e.target.files[0] })
+  }
+  className="border p-2 w-full mb-2"
+/>
+
+<p className="text-sm">Replace PAN</p>
+<input
+  type="file"
+  onChange={(e) =>
+    setEditData({ ...editData, newPan: e.target.files[0] })
+  }
+  className="border p-2 w-full mb-2"
+/>
+
+<p className="text-sm">Replace Photo</p>
+<input
+  type="file"
+  onChange={(e) =>
+    setEditData({ ...editData, newPhoto: e.target.files[0] })
+  }
+  className="border p-2 w-full mb-2"
+/>
+
+<p className="text-sm">Replace Bank Passbook</p>
+<input
+  type="file"
+  onChange={(e) =>
+    setEditData({ ...editData, newBank: e.target.files[0] })
+  }
+  className="border p-2 w-full mb-4"
+/>
 
               <div className="flex gap-2">
                 <button
