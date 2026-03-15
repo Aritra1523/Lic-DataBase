@@ -86,63 +86,63 @@ Krishna Mohan Das (LICI)`;
     window.open(whatsappURL, "_blank");
   };
 
-// const getNextDueDate = (customer) => {
+  // const getNextDueDate = (customer) => {
 
-//   const start = new Date(customer.EnrollmentDate);
-//   const today = new Date();
+  //   const start = new Date(customer.EnrollmentDate);
+  //   const today = new Date();
 
-//   let interval = 1;
+  //   let interval = 1;
 
-//   const type = customer.policyType?.toLowerCase();
+  //   const type = customer.policyType?.toLowerCase();
 
-//   if (type === "m") interval = 1;
-//   if (type === "q") interval = 3;
-//   if (type === "h") interval = 6;
-//   if (type === "y") interval = 12;
+  //   if (type === "m") interval = 1;
+  //   if (type === "q") interval = 3;
+  //   if (type === "h") interval = 6;
+  //   if (type === "y") interval = 12;
 
-//   const due = new Date(start);
+  //   const due = new Date(start);
 
-//   while (due < today) {
-//     due.setMonth(due.getMonth() + interval);
-//   }
+  //   while (due < today) {
+  //     due.setMonth(due.getMonth() + interval);
+  //   }
 
-//   return due;
-// };
+  //   return due;
+  // };
 
-const getDueDates = (customer) => {
-  const start = new Date(customer.EnrollmentDate);
-  const today = new Date();
+  const getDueDates = (customer) => {
+    const start = new Date(customer.EnrollmentDate);
+    const today = new Date();
 
-  let interval = 1;
+    let interval = 1;
 
-  const type = customer.policyType?.toLowerCase();
+    const type = customer.policyType?.toLowerCase();
 
-  if (type === "m") interval = 1;
-  if (type === "q") interval = 3;
-  if (type === "h") interval = 6;
-  if (type === "y") interval = 12;
+    if (type === "m") interval = 1;
+    if (type === "q") interval = 3;
+    if (type === "h") interval = 6;
+    if (type === "y") interval = 12;
 
-  const nextDue = new Date(start);
+    const nextDue = new Date(start);
 
-  while (nextDue <= today) {
-    nextDue.setMonth(nextDue.getMonth() + interval);
-  }
+    while (nextDue <= today) {
+      nextDue.setMonth(nextDue.getMonth() + interval);
+    }
 
-  const lastDue = new Date(nextDue);
-  lastDue.setMonth(lastDue.getMonth() - interval);
+    const lastDue = new Date(nextDue);
+    lastDue.setMonth(lastDue.getMonth() - interval);
 
-  return { lastDue, nextDue };
-};
+    return { lastDue, nextDue };
+  };
 
   const thisWeekDue = customers.filter((c) => {
-  const { lastDue } = getDueDates(c);
+    const { lastDue } = getDueDates(c);
 
-  const today = new Date();
-  const nextWeek = new Date();
-  nextWeek.setDate(today.getDate() + 7);
+    const today = new Date();
+    const nextWeek = new Date();
+    nextWeek.setDate(today.getDate() + 7);
 
-  return lastDue >= today && lastDue <= nextWeek;
-}).length;
+    return lastDue >= today && lastDue <= nextWeek;
+  }).length;
 
   // const markPaid = async (customer) => {
   //   await databases.updateDocument(DATABASE_ID, COLLECTION_ID, customer.$id, {
@@ -152,20 +152,19 @@ const getDueDates = (customer) => {
   //   loadCustomers();
   // };
 
- const markPaid = async (customer) => {
+  const markPaid = async (customer) => {
+    if (customer.lastPaidDate) {
+      await databases.updateDocument(DATABASE_ID, COLLECTION_ID, customer.$id, {
+        lastPaidDate: null,
+      });
+    } else {
+      await databases.updateDocument(DATABASE_ID, COLLECTION_ID, customer.$id, {
+        lastPaidDate: new Date().toISOString(),
+      });
+    }
 
-  if (customer.lastPaidDate) {
-    await databases.updateDocument(DATABASE_ID, COLLECTION_ID, customer.$id, {
-      lastPaidDate: null
-    });
-  } else {
-    await databases.updateDocument(DATABASE_ID, COLLECTION_ID, customer.$id, {
-      lastPaidDate: new Date().toISOString()
-    });
-  }
-
-  loadCustomers();
-};
+    loadCustomers();
+  };
   const startEdit = (customer) => {
     setEditCustomer(customer);
     setEditData(customer);
@@ -178,100 +177,98 @@ const getDueDates = (customer) => {
       [name]: value,
     });
   };
- const updateCustomer = async () => {
-  try {
+  const updateCustomer = async () => {
+    try {
+      let aadharId = editCustomer.aadhar;
+      let panId = editCustomer.pan;
+      let photoId = editCustomer.photo;
+      let bankId = editCustomer.bankPassbook;
 
-    let aadharId = editCustomer.aadhar;
-    let panId = editCustomer.pan;
-    let photoId = editCustomer.photo;
-    let bankId = editCustomer.bankPassbook;
+      if (editData.newAadhar) {
+        const file = await storage.createFile(
+          BUCKET_ID,
+          ID.unique(),
+          editData.newAadhar,
+        );
 
-    if (editData.newAadhar) {
-      const file = await storage.createFile(
-        BUCKET_ID,
-        ID.unique(),
-        editData.newAadhar
-      );
+        if (editCustomer.aadhar) {
+          await storage.deleteFile(BUCKET_ID, editCustomer.aadhar);
+        }
 
-    if (editCustomer.aadhar) {
-  await storage.deleteFile(BUCKET_ID, editCustomer.aadhar);
-}
+        aadharId = file.$id;
+      }
 
-      aadharId = file.$id;
-    }
+      if (editData.newPan) {
+        const file = await storage.createFile(
+          BUCKET_ID,
+          ID.unique(),
+          editData.newPan,
+        );
 
-    if (editData.newPan) {
-      const file = await storage.createFile(
-        BUCKET_ID,
-        ID.unique(),
-        editData.newPan
-      );
-
-      // await storage.deleteFile(BUCKET_ID, editCustomer.pan);
+        // await storage.deleteFile(BUCKET_ID, editCustomer.pan);
 
         if (editCustomer.pan) {
-  await storage.deleteFile(BUCKET_ID, editCustomer.pan);
-}
+          await storage.deleteFile(BUCKET_ID, editCustomer.pan);
+        }
 
-      panId = file.$id;
-    }
+        panId = file.$id;
+      }
 
-    if (editData.newPhoto) {
-      const file = await storage.createFile(
-        BUCKET_ID,
-        ID.unique(),
-        editData.newPhoto
-      );
+      if (editData.newPhoto) {
+        const file = await storage.createFile(
+          BUCKET_ID,
+          ID.unique(),
+          editData.newPhoto,
+        );
 
-      // await storage.deleteFile(BUCKET_ID, editCustomer.photo);
+        // await storage.deleteFile(BUCKET_ID, editCustomer.photo);
         if (editCustomer.photo) {
-  await storage.deleteFile(BUCKET_ID, editCustomer.photo);
-}
+          await storage.deleteFile(BUCKET_ID, editCustomer.photo);
+        }
 
-      photoId = file.$id;
-    }
+        photoId = file.$id;
+      }
 
-    if (editData.newBank) {
-      const file = await storage.createFile(
-        BUCKET_ID,
-        ID.unique(),
-        editData.newBank
-      );
+      if (editData.newBank) {
+        const file = await storage.createFile(
+          BUCKET_ID,
+          ID.unique(),
+          editData.newBank,
+        );
 
-      // await storage.deleteFile(BUCKET_ID, editCustomer.bankPassbook);
+        // await storage.deleteFile(BUCKET_ID, editCustomer.bankPassbook);
 
         if (editCustomer.bankId) {
-  await storage.deleteFile(BUCKET_ID, editCustomer.bankId);
-}
-      bankId = file.$id;
-    }
-
-    await databases.updateDocument(
-      DATABASE_ID,
-      COLLECTION_ID,
-      editCustomer.$id,
-      {
-        fullName: editData.fullName,
-        phone: editData.phone,
-        FatherName: editData.FatherName,
-        MotherName: editData.MotherName,
-        premiumAmount: editData.premiumAmount,
-        policyNumber: editData.policyNumber,
-
-        aadhar: aadharId,
-        pan: panId,
-        photo: photoId,
-        bankPassbook: bankId
+          await storage.deleteFile(BUCKET_ID, editCustomer.bankId);
+        }
+        bankId = file.$id;
       }
-    );
 
-    setEditCustomer(null);
-    loadCustomers();
+      await databases.updateDocument(
+        DATABASE_ID,
+        COLLECTION_ID,
+        editCustomer.$id,
+        {
+          fullName: editData.fullName,
+          phone: editData.phone,
+          FatherName: editData.FatherName,
+          MotherName: editData.MotherName,
+          premiumAmount: editData.premiumAmount,
+          policyNumber: editData.policyNumber,
 
-  } catch (err) {
-    console.log(err);
-  }
-};
+          aadhar: aadharId,
+          pan: panId,
+          photo: photoId,
+          bankPassbook: bankId,
+        },
+      );
+
+      setEditCustomer(null);
+      loadCustomers();
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <div className="p-8 bg-gray-100 min-h-screen">
       <h2 className="text-3xl font-bold mb-6">Customers</h2>
@@ -336,9 +333,9 @@ const getDueDates = (customer) => {
 
               const { lastDue, nextDue } = getDueDates(c);
 
-const lastPaid = c.lastPaidDate ? new Date(c.lastPaidDate) : null;
+              const lastPaid = c.lastPaidDate ? new Date(c.lastPaidDate) : null;
 
-const isDue = !lastPaid || lastPaid < lastDue;
+              const isDue = !lastPaid || lastPaid < lastDue;
 
               return (
                 <tr
@@ -358,10 +355,10 @@ const isDue = !lastPaid || lastPaid < lastDue;
                   </td>
 
                   <td className="p-4">
-  {c.EnrollmentDate
-    ? new Date(c.EnrollmentDate).toLocaleDateString("en-GB")
-    : ""}
-</td>
+                    {c.EnrollmentDate
+                      ? new Date(c.EnrollmentDate).toLocaleDateString("en-GB")
+                      : ""}
+                  </td>
 
                   {/* <td>{nextDue.toLocaleDateString("en-IN")}</td> */}
 
@@ -374,43 +371,49 @@ const isDue = !lastPaid || lastPaid < lastDue;
                   </td> */}
 
                   <td className="p-4">
-                    <a
-                      href={aadharURL}
-                      target="_blank"
-                      className="text-indigo-600 hover:underline"
-                    >
-                      View
-                    </a>
+                   {c.aadhar ? (
+  <a
+    href={storage.getFileView(BUCKET_ID, c.aadhar)}
+    target="_blank"
+    className="text-indigo-600 hover:underline"
+  >
+    View
+  </a>
+) : (
+  <span className="text-red-500 text-sm">
+    Not uploaded
+  </span>
+)}
                   </td>
 
                   <td className="p-4">
-                    <a
-                      href={panURL}
-                      target="_blank"
-                      className="text-indigo-600 hover:underline"
-                    >
-                      View
-                    </a>
+                   {c.pan ? (
+  <a href={storage.getFileView(BUCKET_ID, c.pan)} target="_blank">
+    View
+  </a>
+) : (
+  <span className="text-red-500 text-sm">Not uploaded</span>
+)}
                   </td>
 
                   <td className="p-4">
-                    <a
-                      href={photoURL}
-                      target="_blank"
-                      className="text-indigo-600 hover:underline"
-                    >
-                      View
-                    </a>
+                    {c.photo ? (
+  <a href={storage.getFileView(BUCKET_ID, c.photo)} target="_blank">
+    View
+  </a>
+) : (
+  <span className="text-red-500 text-sm">Not uploaded</span>
+)}
                   </td>
 
                   <td className="p-4">
-                    <a
-                      href={bankURL}
-                      target="_blank"
-                      className="text-indigo-600 hover:underline"
-                    >
-                      View
-                    </a>
+                   {c.bankPassbook ? (
+  <a href={storage.getFileView(BUCKET_ID, c.bankPassbook)} target="_blank">
+    View
+  </a>
+) : (
+  <span className="text-red-500 text-sm">Not uploaded</span>
+)}
                   </td>
 
                   <td className="p-4 flex gap-2">
@@ -493,40 +496,40 @@ const isDue = !lastPaid || lastPaid < lastDue;
               />
 
               <p className="text-sm mt-2">Replace Aadhar</p>
-<input
-  type="file"
-  onChange={(e) =>
-    setEditData({ ...editData, newAadhar: e.target.files[0] })
-  }
-  className="border p-2 w-full mb-2"
-/>
+              <input
+                type="file"
+                onChange={(e) =>
+                  setEditData({ ...editData, newAadhar: e.target.files[0] })
+                }
+                className="border p-2 w-full mb-2"
+              />
 
-<p className="text-sm">Replace PAN</p>
-<input
-  type="file"
-  onChange={(e) =>
-    setEditData({ ...editData, newPan: e.target.files[0] })
-  }
-  className="border p-2 w-full mb-2"
-/>
+              <p className="text-sm">Replace PAN</p>
+              <input
+                type="file"
+                onChange={(e) =>
+                  setEditData({ ...editData, newPan: e.target.files[0] })
+                }
+                className="border p-2 w-full mb-2"
+              />
 
-<p className="text-sm">Replace Photo</p>
-<input
-  type="file"
-  onChange={(e) =>
-    setEditData({ ...editData, newPhoto: e.target.files[0] })
-  }
-  className="border p-2 w-full mb-2"
-/>
+              <p className="text-sm">Replace Photo</p>
+              <input
+                type="file"
+                onChange={(e) =>
+                  setEditData({ ...editData, newPhoto: e.target.files[0] })
+                }
+                className="border p-2 w-full mb-2"
+              />
 
-<p className="text-sm">Replace Bank Passbook</p>
-<input
-  type="file"
-  onChange={(e) =>
-    setEditData({ ...editData, newBank: e.target.files[0] })
-  }
-  className="border p-2 w-full mb-4"
-/>
+              <p className="text-sm">Replace Bank Passbook</p>
+              <input
+                type="file"
+                onChange={(e) =>
+                  setEditData({ ...editData, newBank: e.target.files[0] })
+                }
+                className="border p-2 w-full mb-4"
+              />
 
               <div className="flex gap-2">
                 <button
