@@ -1,4 +1,5 @@
-import { use, useState } from "react";
+import { useState } from "react";
+import { toast } from "react-toastify";
 import { databases, DATABASE_ID, COLLECTION_ID } from "../appwrite/config";
 import { ID } from "appwrite";
 import FileUpload from "../components/FileUpload";
@@ -19,11 +20,20 @@ function AddCustomer() {
   const [bankFile, setBankFile] = useState("");
   const [policyType, setPolicyType] = useState("");
 const [loading, setLoading] = useState(false);
+
+/*Add Customer Function*/ 
+
   const addCustomer = async () => {
      if (!name  || !premiumAmount || !EnrollmentDate || !policyType) {
     alert("Please fill all required fields ❗");
     return;
   }
+   console.log("File IDs:", {
+    aadharFile,
+    panFile,
+    photoFile,
+    bankFile,
+  });
     try {
       setLoading(true)
       await databases.createDocument(DATABASE_ID, COLLECTION_ID, ID.unique(), {
@@ -41,14 +51,18 @@ const [loading, setLoading] = useState(false);
         photo: photoFile,
         bankPassbook: bankFile,
         policyType: policyType,
+
+        
       });
 
-      alert("Customer Added successfully ✅"),
+      // alert("Customer Added successfully ✅"),
+      toast.success("Customer Added Successfully ✅");
       setName(""),
       setPhone(""),
       setPolicy(""),
       setPremiumAmount(""),
       setEnrollmentDate(""),
+      setdateOfBirth("")
       setfatherName(""), setmotherName(""),
       setAadharFile(""),
       setPanFile(""),

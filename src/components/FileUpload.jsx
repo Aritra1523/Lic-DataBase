@@ -7,58 +7,36 @@ import { ID } from "appwrite";
 function FileUpload({ setFileId }) {
   const [status, setStatus] = useState("");
 
-  const compressImage = async (file) => {
-  const options = {
-    maxSizeMB: 0.5, // 500KB
-    maxWidthOrHeight: 1200,
-    useWebWorker: true,
-  };
-
-  try {
-    const compressedFile = await imageCompression(file, options);
-    return compressedFile;
-  } catch (error) {
-    console.log(error);
-    return file;
-  }
-};
 
   const upload = async (e) => {
-    let selectedFile = e.target.files[0];
+  let selectedFile = e.target.files[0];
 
-    if (!selectedFile) {
-      setStatus("Please select a file first");
-      return;
-    }
+  if (!selectedFile) {
+    setStatus("Please select a file first");
+    return;
+  }
 
-    try {
-      setStatus("Processing...");
-
-      // Compress only if image
-    if (selectedFile.type.startsWith("image/")) {
-      selectedFile = await compressImage(selectedFile);
-    }
-
+  try {
     setStatus("Uploading...");
 
-      const res = await storage.createFile(
-        BUCKET_ID,
-        ID.unique(),
-        selectedFile,
-      );
+    const res = await storage.createFile(
+      BUCKET_ID,
+      ID.unique(),
+      selectedFile,
+      ["read(\"any\")"]
+    );
 
-      setFileId(res.$id);
+    setFileId(res.$id);
 
-      setStatus(`${selectedFile.name} uploaded successfully ✅`);
-    } catch (err) {
-      console.log(err);
-      setStatus("Upload Failed ❌");
-      alert( err);
-      alert(err.response);
-      alert(err.message);
-      setStatus(err.response);
-    }
-  };
+    setStatus(`${selectedFile.name} uploaded successfully ✅`);
+  } catch (err) {
+    console.log("FULL ERROR:", err);
+    console.log("MESSAGE:", err.message);
+    console.log("RESPONSE:", err.response?.message);
+
+    setStatus("Upload Failed ❌");
+  }
+};
   
 
   return (

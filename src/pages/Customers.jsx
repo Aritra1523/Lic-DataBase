@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+
 import "../App.css";
 import { ID } from "appwrite";
 import {
@@ -14,6 +16,8 @@ function Customers() {
   const [search, setSearch] = useState("");
   const [editCustomer, setEditCustomer] = useState(null);
   const [editData, setEditData] = useState({});
+  const [updating, setUpdating] = useState(false);
+
   const loadCustomers = async () => {
     const res = await databases.listDocuments(DATABASE_ID, COLLECTION_ID);
     setCustomers(res.documents);
@@ -22,6 +26,8 @@ function Customers() {
   useEffect(() => {
     loadCustomers();
   }, []);
+
+  /*Delete Customer */
 
   const deleteCustomer = async (customer) => {
     if (!window.confirm("Delete this customer?")) return;
@@ -50,6 +56,7 @@ function Customers() {
       console.log(err);
     }
   };
+/*Search customer's using filter method*/ 
 
   const filteredCustomers = customers.filter(
     (c) =>
@@ -65,7 +72,7 @@ function Customers() {
     (sum, c) => sum + Number(c.premiumAmount || 0),
     0,
   );
-
+/*Send Reminder dur customer's using whtasApp */
   const sendReminder = (customer) => {
     const message = `Hello ${customer.fullName},
 
@@ -108,6 +115,7 @@ Krishna Mohan Das (LICI)`;
 
   //   return due;
   // };
+
 
   const getDueDates = (customer) => {
     const start = new Date(customer.EnrollmentDate);
@@ -169,6 +177,9 @@ Krishna Mohan Das (LICI)`;
     setEditCustomer(customer);
     setEditData(customer);
   };
+
+  /*Edit Customer Details */
+  
   const handleEditChange = (e) => {
     const { name, value } = e.target;
 
@@ -179,10 +190,12 @@ Krishna Mohan Das (LICI)`;
   };
   const updateCustomer = async () => {
     try {
+      setUpdating(true);
       let aadharId = editCustomer.aadhar;
       let panId = editCustomer.pan;
       let photoId = editCustomer.photo;
       let bankId = editCustomer.bankPassbook;
+      
 
       if (editData.newAadhar) {
         const file = await storage.createFile(
@@ -205,8 +218,6 @@ Krishna Mohan Das (LICI)`;
           editData.newPan,
         );
 
-        // await storage.deleteFile(BUCKET_ID, editCustomer.pan);
-
         if (editCustomer.pan) {
           await storage.deleteFile(BUCKET_ID, editCustomer.pan);
         }
@@ -221,7 +232,6 @@ Krishna Mohan Das (LICI)`;
           editData.newPhoto,
         );
 
-        // await storage.deleteFile(BUCKET_ID, editCustomer.photo);
         if (editCustomer.photo) {
           await storage.deleteFile(BUCKET_ID, editCustomer.photo);
         }
@@ -236,10 +246,8 @@ Krishna Mohan Das (LICI)`;
           editData.newBank,
         );
 
-        // await storage.deleteFile(BUCKET_ID, editCustomer.bankPassbook);
-
-        if (editCustomer.bankId) {
-          await storage.deleteFile(BUCKET_ID, editCustomer.bankId);
+        if (editCustomer.bankPassbook) {
+          await storage.deleteFile(BUCKET_ID, editCustomer.bankPassbook);
         }
         bankId = file.$id;
       }
@@ -262,11 +270,14 @@ Krishna Mohan Das (LICI)`;
           bankPassbook: bankId,
         },
       );
-
+      toast.success("Customer updated successfully ✅");
       setEditCustomer(null);
       loadCustomers();
     } catch (err) {
       console.log(err);
+      toast.error("Update failed ❌");
+    } finally {
+      setUpdating(false);
     }
   };
   return (
@@ -344,8 +355,15 @@ Krishna Mohan Das (LICI)`;
                 >
                   <td className="p-4 font-medium">{c.fullName}</td>
                   <td className="p-4">{c.phone}</td>
-                  <td className="p-4">{c.DateOfBirth?.split("T")[0]}</td>
-                  <td className="p-4">{c.FatherName}</td>
+<td className="p-4">
+  {c.DateOfBirth
+    ? new Date(c.DateOfBirth).toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      })
+    : ""}
+</td>                <td className="p-4">{c.FatherName}</td>
                   <td className="p-4">{c.MotherName}</td>
                   <td className="p-4">{c.policyNumber}</td>
                   <td className="p-4">{c.policyType}</td>
@@ -371,49 +389,56 @@ Krishna Mohan Das (LICI)`;
                   </td> */}
 
                   <td className="p-4">
-                   {c.aadhar ? (
-  <a
-    href={storage.getFileView(BUCKET_ID, c.aadhar)}
-    target="_blank"
-    className="text-indigo-600 hover:underline"
-  >
-    View
-  </a>
-) : (
-  <span className="text-red-500 text-sm">
-    Not uploaded
-  </span>
-)}
+                    {c.aadhar ? (
+                      <a
+                        href={storage.getFileView(BUCKET_ID, c.aadhar)}
+                        target="_blank"
+                        className="text-indigo-600 hover:underline"
+                      >
+                        View
+                      </a>
+                    ) : (
+                      <span className="text-red-500 text-sm">Not uploaded</span>
+                    )}
                   </td>
 
                   <td className="p-4">
-                   {c.pan ? (
-  <a href={storage.getFileView(BUCKET_ID, c.pan)} target="_blank">
-    View
-  </a>
-) : (
-  <span className="text-red-500 text-sm">Not uploaded</span>
-)}
+                    {c.pan ? (
+                      <a
+                        href={storage.getFileView(BUCKET_ID, c.pan)}
+                        target="_blank"
+                      >
+                        View
+                      </a>
+                    ) : (
+                      <span className="text-red-500 text-sm">Not uploaded</span>
+                    )}
                   </td>
 
                   <td className="p-4">
                     {c.photo ? (
-  <a href={storage.getFileView(BUCKET_ID, c.photo)} target="_blank">
-    View
-  </a>
-) : (
-  <span className="text-red-500 text-sm">Not uploaded</span>
-)}
+                      <a
+                        href={storage.getFileView(BUCKET_ID, c.photo)}
+                        target="_blank"
+                      >
+                        View
+                      </a>
+                    ) : (
+                      <span className="text-red-500 text-sm">Not uploaded</span>
+                    )}
                   </td>
 
                   <td className="p-4">
-                   {c.bankPassbook ? (
-  <a href={storage.getFileView(BUCKET_ID, c.bankPassbook)} target="_blank">
-    View
-  </a>
-) : (
-  <span className="text-red-500 text-sm">Not uploaded</span>
-)}
+                    {c.bankPassbook ? (
+                      <a
+                        href={storage.getFileView(BUCKET_ID, c.bankPassbook)}
+                        target="_blank"
+                      >
+                        View
+                      </a>
+                    ) : (
+                      <span className="text-red-500 text-sm">Not uploaded</span>
+                    )}
                   </td>
 
                   <td className="p-4 flex gap-2">
@@ -534,9 +559,10 @@ Krishna Mohan Das (LICI)`;
               <div className="flex gap-2">
                 <button
                   onClick={updateCustomer}
+                  disabled={updating}
                   className="bg-blue-500 text-white px-4 py-2 rounded"
                 >
-                  Update
+                  {updating ? "Updating..." : "Update"}
                 </button>
 
                 <button
