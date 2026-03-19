@@ -90,7 +90,7 @@ const [loading, setLoading] = useState(false);
 
         <div>
           <label className="block text-sm font-semibold text-gray-700">
-            Customer Name
+            Customer Name **
           </label>
           <input
             type="text"
@@ -142,7 +142,7 @@ const [loading, setLoading] = useState(false);
 
         <div>
           <label className="block text-sm font-semibold text-gray-700">
-            Premium Amount
+            Premium Amount**
           </label>
           <input
             type="number"
@@ -156,7 +156,7 @@ const [loading, setLoading] = useState(false);
 
         <div>
           <label className="block text-sm font-semibold text-gray-700">
-            Enrollment Date
+            Enrollment Date**
           </label>
           <input
             type="date"
@@ -169,7 +169,7 @@ const [loading, setLoading] = useState(false);
 
         <div>
           <label className="block text-sm font-semibold text-gray-700">
-            Policy Type
+            Policy Type**
           </label>
           <input
             type="text"
